@@ -81,13 +81,13 @@ function send_verification_email($email, $verification_code) {
         $mail->isSMTP();
         $mail->Host       = 'smtp.gmail.com'; // Use Gmail's SMTP server
         $mail->SMTPAuth   = true;
-        $mail->Username   = 'gianjbsasha1430@gmail.com'; // Your Gmail address
-        $mail->Password   = 'dyid ogmq coex kjgn'; // Your app-specific password
+        $mail->Username   = 'capalac.garvybscs2022@gmail.com'; // Your Gmail address
+        $mail->Password   = 'shnn inzi iupm gekv'; // Your app-specific password
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port       = 587;
 
         //Recipients
-        $mail->setFrom('gianjbsasha1430@gmail.com', 'Mailer');
+        $mail->setFrom('capalac.garvybscs2022@gmail.com', 'Mailer');
         $mail->addAddress($email); // Sends the email to the user's email address
 
         //Content

@@ -135,6 +135,35 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         .signup-link a:hover {
             color: #0056b3;
         }
+
+        /* Google Sign-In Button */
+        .google-signin {
+            margin-top: 20px;
+        }
+
+        .google-signin button {
+            background-color: #4285F4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .google-signin button img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+
+        .google-signin button:hover {
+            background-color: #357ae8;
+        }
     </style>
 </head>
 <body>
@@ -148,6 +177,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <input type="password" name="password" placeholder="Password" required>
             <button type="submit">Login</button>
         </form>
+        <div class="google-signin">
+            <form action="oauth-login.php" method="post">
+                <button type="submit">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/768px-Google_%22G%22_logo.svg.png" alt="Google logo">
+                    Sign in with Google
+                </button>
+            </form>
+        </div>
         <div class="signup-link">
             <p>Don't have an account? <a href="signup.html">Sign up</a></p>
         </div>

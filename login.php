@@ -1,3 +1,42 @@
+<?php
+session_start();
+$mysqli = require __DIR__ . "/database.php";
+
+$error = "";
+
+// Handle login form submission
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $email = $_POST["email"];
+    $password = $_POST["password"];
+
+    // Fetch user data from the "users" table
+    $sql = "SELECT * FROM users WHERE email = ?";
+    $stmt = $mysqli->prepare($sql);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($user = $result->fetch_assoc()) {
+        // Verify password against password_hash
+        if (password_verify($password, $user["password_hash"])) {
+            if ($user["is_verified"]) {
+                // Start session and redirect to dashboard
+                $_SESSION["user_id"] = $user["id"];
+                $_SESSION["fullname"] = $user["fullname"];
+                header("Location: index.php");
+                exit;
+            } else {
+                $error = "Account not verified!";
+            }
+        } else {
+            $error = "Incorrect password!";
+        }
+    } else {
+        $error = "No user found with that email!";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

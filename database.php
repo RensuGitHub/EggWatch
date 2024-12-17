@@ -1,11 +1,10 @@
 <?php
+$hostname = "auth-db1630.hstgr.io";
+$username = "u779691448_EggWatch";
+$password = "Namias99";
+$database = "u779691448_EggWatchDB"; 
 
-$host = 'localhost';
-$db = 'u779691448_EggWatchDB';
-$user = 'u779691448_EggWatch';
-$pass = 'Namias99'; 
-
-$mysqli = new mysqli($host, $user, $pass, $db);
+$mysqli = new mysqli($hostname, $username, $password, $database);
 
 if ($mysqli->connect_error) {
     die('Connect Error (' . $mysqli->connect_errno . ') ' . $mysqli->connect_error);

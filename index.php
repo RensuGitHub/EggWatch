@@ -1,31 +1,48 @@
 <?php
 session_start();
 
-// Check if the user is logged in
-if (isset($_SESSION["user_id"])) {
-    $mysqli = require __DIR__ . "/database.php";
-    
-    // Fetch user details
-    $sql = "SELECT * FROM users WHERE id = {$_SESSION["user_id"]}";
-    $result = $mysqli->query($sql);
-    $user = $result->fetch_assoc();
+$mysqli = require __DIR__ . "/database.php";
+
+if (!$mysqli) {
+    die("Database connection failed.");
 }
 
+// Initialize variables
+$user = null;
+$temperature = "N/A";
+$humidity = "N/A";
+$tempStatus = "Unknown";
+$humidStatus = "Unknown";
+
+// Fetch user details if logged in
+if (isset($_SESSION["user_id"])) {
+    $stmt = $mysqli->prepare("SELECT * FROM users WHERE id = ?");
+    $stmt->bind_param("i", $_SESSION["user_id"]);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $user = $result->fetch_assoc();
+    }
+    $stmt->close();
+}
+
+// Set proper database connection encoding
+$mysqli->set_charset("utf8mb4");
+
 // Fetch the latest temperature and humidity readings
-$sql = "SELECT temperature, humidity FROM sensor_readings ORDER BY datetime DESC LIMIT 1";
+$sql = "SELECT temperature, humidity FROM dht11 ORDER BY datetime DESC LIMIT 1";
 $result = $mysqli->query($sql);
 
 if ($result && $result->num_rows > 0) {
     $row = $result->fetch_assoc();
     $temperature = $row["temperature"];
     $humidity = $row["humidity"];
-} else {
-    $temperature = "N/A";
-    $humidity = "N/A";
 }
 
 // Function to determine status
 function getStatus($value, $min, $max) {
+    if (!is_numeric($value)) return "Invalid";
     if ($value < $min) return "Below range";
     if ($value > $max) return "Above range";
     return "Optimal range";
@@ -93,7 +110,7 @@ $humidStatus = getStatus($humidity, 50, 60);
     </style>
 </head>
 <body>
-    <?php if (isset($user)): ?>
+    <?php if ($user): ?>
         <div class="user-info">Welcome, <?= htmlspecialchars($user["fullname"]) ?></div>
     <?php endif; ?>
     <div class="container">
@@ -101,15 +118,15 @@ $humidStatus = getStatus($humidity, 50, 60);
             <div class="card-header">
                 <span class="card-title">Temperature</span>
             </div>
-            <div class="card-content"><?php echo $temperature; ?>°C</div>
-            <div class="card-status"><?php echo $tempStatus; ?></div>
+            <div class="card-content"><?= htmlspecialchars($temperature) ?> &deg;C</div>
+            <div class="card-status"><?= htmlspecialchars($tempStatus) ?></div>
         </div>
         <div class="card">
             <div class="card-header">
                 <span class="card-title">Humidity</span>
             </div>
-            <div class="card-content"><?php echo $humidity; ?>%</div>
-            <div class="card-status"><?php echo $humidStatus; ?></div>
+            <div class="card-content"><?= htmlspecialchars($humidity) ?>%</div>
+            <div class="card-status"><?= htmlspecialchars($humidStatus) ?></div>
         </div>
     </div>
 

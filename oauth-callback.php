@@ -6,8 +6,8 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 $client = new Google_Client();
-$client->setClientId('10700573976-ocata2iovvvs7m2cgf3ghs2c417stf98.apps.googleusercontent.com'); // Replace with your new Google Client ID
-$client->setClientSecret('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'); // Replace with your new Google Client Secret
+$client->setClientId('10700573976-a9t9s8oc5iidm6kop2e1rdomtmbb1q49.apps.googleusercontent.com'); // Replace with your new Google Client ID
+$client->setClientSecret('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'); // Replace with your new Google Client Secret
 $client->setRedirectUri('https://antiquewhite-bear-449942.hostingersite.com/oauth-callback.php'); // Ensure this matches the URI in Google API Console
 
 if (isset($_GET['code'])) {

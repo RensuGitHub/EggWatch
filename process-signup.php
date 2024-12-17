@@ -3,17 +3,12 @@
 // If you installed PHPMailer using Composer, include the Composer autoload file
 require __DIR__ . '/vendor/autoload.php';
 
-// If you manually downloaded PHPMailer, use the correct path to the PHPMailer files
-// require __DIR__ . '/path/to/PHPMailer/src/Exception.php';
-// require __DIR__ . '/path/to/PHPMailer/src/PHPMailer.php';
-// require __DIR__ . '/path/to/PHPMailer/src/SMTP.php';
-
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 $mysqli = require __DIR__ . "/database.php";
 
-
+// Input validation
 if (empty($_POST["name"])) {
     die("Name is required!");
 }
@@ -38,12 +33,14 @@ if ($_POST["password"] !== $_POST["confirm-password"]) {
     die("Passwords must match");
 }
 
+// Hash the password
 $password_hash = password_hash($_POST["password"], PASSWORD_DEFAULT);
 
 $verification_code = bin2hex(random_bytes(16));
 
-$sql = "INSERT INTO users (fullname, email, password_hash, role, verification_code)
-        VALUES (?, ?, ?, 'client', ?)";
+// SQL query to insert user
+$sql = "INSERT INTO users (fullname, email, password_hash, verification_code)
+        VALUES (?, ?, ?, ?)";
 
 $stmt = $mysqli->stmt_init();
 
@@ -51,6 +48,7 @@ if (!$stmt->prepare($sql)) {
     die("SQL error: " . $mysqli->error);
 }
 
+// Bind the parameters
 $stmt->bind_param("ssss",
                   $_POST["name"],
                   $_POST["email"],
@@ -66,30 +64,31 @@ try {
     if ($mysqli->errno === 1062) {
         die("Email already taken");
     } else {
-        die("Database error: ");
+        die("Database error: " . $mysqli->error);
     }
 }
 
+// Function to send the verification email
 function send_verification_email($email, $verification_code) {
     $mail = new PHPMailer(true);
     try {
-        //Server settings
+        // Server settings
         $mail->isSMTP();
-        $mail->Host       = 'smtp.gmail.com'; // Use Gmail's SMTP server
+        $mail->Host       = 'smtp.gmail.com';
         $mail->SMTPAuth   = true;
         $mail->Username   = 'mailernimike6@gmail.com'; // Your Gmail address
-        $mail->Password   = 'aoad ikwg wqcj rxxb'; // Your app-specific password
+        $mail->Password   = 'aoad ikwg wqcj rxxb';     // Your app-specific password
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port       = 587;
 
-        //Recipients
+        // Recipients
         $mail->setFrom('mailernimike6@gmail.com', 'Mailer');
-        $mail->addAddress($email); // Sends the email to the user's email address
+        $mail->addAddress($email);
 
-        //Content
+        // Content
         $mail->isHTML(true);
-        $mail->Subject = 'Email Verification';
-        $mail->Body    = "Please click the link below to verify your email address: <a href='https://lightblue-hamster-252631.hostingersite.com/verify-email.php?code=$verification_code'>Verify Email</a>"; // Update to localhost
+        $mail->Subject = 'EggWatch - Account Email Verification';
+        $mail->Body    = "Please click the link below to verify your email address: <a href='https://antiquewhite-bear-449942.hostingersite.com/verify-email.php?code=$verification_code'>Verify Email</a>";
 
         $mail->send();
     } catch (Exception $e) {

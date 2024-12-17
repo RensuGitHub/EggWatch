@@ -10,12 +10,6 @@ if ($mysqli->connect_error) {
     die('Connect Error (' . $mysqli->connect_errno . ') ' . $mysqli->connect_error);
 }
 
-// Check if the 'role' column exists
-$result = $mysqli->query("SHOW COLUMNS FROM users LIKE 'role'");
-if ($result->num_rows == 0) {
-    $mysqli->query("ALTER TABLE users ADD COLUMN role ENUM('admin', 'client') DEFAULT 'client'");
-}
-
 // Check if the 'is_verified' column exists
 $result = $mysqli->query("SHOW COLUMNS FROM users LIKE 'is_verified'");
 if ($result->num_rows == 0) {

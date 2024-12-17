@@ -8,7 +8,7 @@ use PHPMailer\PHPMailer\Exception;
 $client = new Google_Client();
 $client->setClientId('10700573976-ocata2iovvvs7m2cgf3ghs2c417stf98.apps.googleusercontent.com'); // Replace with your new Google Client ID
 $client->setClientSecret('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'); // Replace with your new Google Client Secret
-$client->setRedirectUri('https://lightblue-hamster-252631.hostingersite.com/oauth-callback.php'); // Ensure this matches the URI in Google API Console
+$client->setRedirectUri('https://antiquewhite-bear-449942.hostingersite.com/oauth-callback.php'); // Ensure this matches the URI in Google API Console
 
 if (isset($_GET['code'])) {
     $token = $client->fetchAccessTokenWithAuthCode($_GET['code']);
@@ -43,14 +43,12 @@ if (isset($_GET['code'])) {
         session_start();
         session_regenerate_id();
         $_SESSION["user_id"] = $user["id"];
-        $_SESSION["role"] = $user["role"];
         if ($user["is_verified"]) {
             header("Location: index.php");
         } else {
             header("Location: unverified.php");
         }
     } else {
-        // User does not exist, create a new user
         // User does not exist, create a new user
         $verification_code = bin2hex(random_bytes(16));
         $sql = "INSERT INTO users (fullname, email, is_verified, verification_code) VALUES (?, ?, TRUE, ?)";
@@ -68,8 +66,7 @@ if (isset($_GET['code'])) {
         session_start();
         session_regenerate_id();
         $_SESSION["user_id"] = $mysqli->insert_id;
-        $_SESSION["role"] = 'client'; // Default role
-        header("Location: https://lightblue-hamster-252631.hostingersite.com/verify-email.php?code=$verification_code");
+        header("Location: https://antiquewhite-bear-449942.hostingersite.com/verify-email.php?code=$verification_code");
         header("Location: index.php");
     }
     exit;
@@ -96,13 +93,13 @@ function send_verification_email($email, $verification_code) {
         //Content
         $mail->isHTML(true);
         $mail->Subject = 'Email Verification';
-        $mail->Body    = "Please click the link below to verify your email address: <a href='https://lightblue-hamster-252631.hostingersite.com/verify-email.php?code=$verification_code'>Verify Email</a>"; // Update to localhost
+        $mail->Body    = "Please click the link below to verify your email address: <a href='https://antiquewhite-bear-449942.hostingersite.com/verify-email.php?code=$verification_code'>Verify Email</a>"; // Update to localhost
 
         $mail->send();
     } catch (Exception $e) {
         die("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
     }
 
-    header("Location: https://lightblue-hamster-252631.hostingersite.com/verify-email.php?code=$verification_code");
+    header("Location: https://antiquewhite-bear-449942.hostingersite.com/verify-email.php?code=$verification_code");
 }
 ?>

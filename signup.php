@@ -60,8 +60,7 @@ try {
     exit;
 } catch (mysqli_sql_exception) {
     if ($mysqli->errno === 1062) {
-        header("Location: email-taken.html");
-        exit;
+        die("Email already taken");
     } else {
         die("Database error: " . $mysqli->error);
     }
@@ -75,13 +74,13 @@ function send_verification_email($email, $verification_code) {
         $mail->isSMTP();
         $mail->Host       = 'smtp.gmail.com';
         $mail->SMTPAuth   = true;
-        $mail->Username   = 'capalac.garvybscs2022@gmail.com'; // Your Gmail address
-        $mail->Password   = 'shnn inzi iupm gekv '; // Your app-specific password
+        $mail->Username   = 'mailernimike6@gmail.com'; // Your Gmail address
+        $mail->Password   = 'aoad ikwg wqcj rxxb';     // Your app-specific password
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port       = 587;
 
         // Recipients
-        $mail->setFrom('capalac.garvybscs2022@gmail.com', 'Mailer');
+        $mail->setFrom('mailernimike6@gmail.com', 'Mailer');
         $mail->addAddress($email);
 
         // Content
@@ -94,5 +93,4 @@ function send_verification_email($email, $verification_code) {
         die("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
     }
 }
-
 ?>
